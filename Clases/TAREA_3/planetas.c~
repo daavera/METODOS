@@ -5,24 +5,22 @@
 #define G 39.4793
 //Funciones
 int ind(int i,int j);
-float acele_x(float m,float x_yo,float x,float r);
-float acele_y(float m,float y_yo, float y,float r);
-float acele_z(float m,float z_yo, float z, float r);
+float acele(float m,float yo,float o,float r);
 float r(float x_yo, float x_o,float y_yo, float y_o,float z_yo, float z_o);
 
 int main(void){
 	FILE *in;
-	int i, k, j;
+	int i, k, j, n_ts;
 	float Ax, Ay, Az;
 	float dt = 0.001;
 	float m[10];
-
-	float *x = malloc((10*1000)*sizeof(float));
-	float *y = malloc((10*1000)*sizeof(float));
-	float *z = malloc((10*1000)*sizeof(float));
-	float *vx = malloc((10*1000)*sizeof(float));
-	float *vy = malloc((10*1000)*sizeof(float));
-	float *vz = malloc((10*1000)*sizeof(float));
+	n_ts = 100000
+	float *x = malloc((10*n_ts)*sizeof(float));
+	float *y = malloc((10*n_ts)*sizeof(float));
+	float *z = malloc((10*n_ts)*sizeof(float));
+	float *vx = malloc((10*n_ts)*sizeof(float));
+	float *vy = malloc((10*n_ts)*sizeof(float));
+	float *vz = malloc((10*n_ts)*sizeof(float));
 
 	char temp[100];
 	char filename[50] = "coordinates_1.csv";
@@ -43,9 +41,9 @@ int main(void){
 			float x_yo = x[in];
 			float y_yo = y[in];
 			float z_yo = z[in];
-			float Ax = 0;
-			float Ay = 0;
-			float Az = 0;
+			Ax = 0;
+			Ay = 0;
+			Az = 0;
 			for(i=0;i<10;j++){
 				if(i==j){
 					continue;
@@ -56,9 +54,9 @@ int main(void){
 				float y_o = y[in];
 				float z_o = z[in];
 				float r_temp = r(x_yo,x_o,y_yo,y_o,z_yo,z_o);
-				Ax += acele_x(m_o,x_yo,x_o,r);
-				Ay += acele_y(m_o,y_yo,y_o,r);
-				Az += acele_z(m_o,z_yo,z_o,r);
+				Ax += acele(m_o,x_yo,x_o,r);
+				Ay += acele(m_o,y_yo,y_o,r);
+				Az += acele(m_o,z_yo,z_o,r);
 			}
 			float vx_int = vx[in] + (0.5*Ax*dt); 
 			float vy_int = vy[in] + (0.5*Ay*dt);
@@ -67,8 +65,7 @@ int main(void){
 			int in_new = ind(k,j);
 			x[in_new] = x_yo + vx_int*dt;
 			y[in_new] = y_yo + vy_int*dt;
-			z[in_new] = z_yo + vz_int*dt;
-			
+			z[in_new] = z_yo + vz_int*dt;	
 		}
 	}
 return 0;
@@ -80,19 +77,12 @@ float r(float x_yo, float x_o,float y_yo, float y_o,float z_yo, float z_o){
 	return dist;
 }
 
-//Aceleraciones
-float acele_x(float m,float x_yo, float x, float r){
-	float Ax = G*m*(x-x_yo)/pow(r,3.0);
-	return Ax;	
+//Aceleracion
+float acele(float m,float yo, float o, float r){
+	float A = G*m*(o-yo)/pow(r,3.0);
+	return A;	
 }
-float acele_y(float m,float y_yo, float y, float r){
-	float Ay = G*m*(y-y_yo)/pow(r,3.0);
-	return Ay;	
-}
-float acele_z(float m,float z_yo, float z, float r){
-	float Az = G*m*(z-z_yo)/pow(r,3.0);
-	return Az;	
-}
+
 
 // Convertir a index plano
 int ind(int i, int j){
