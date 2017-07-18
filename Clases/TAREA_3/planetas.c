@@ -3,15 +3,18 @@
 #include <stdio.h>
 #include <math.h>
 #define G 39.4793
+//Funciones
 int ind(int i,int j);
 float acele_x(float m,float x_yo,float x,float r);
 float acele_y(float m,float y_yo, float y,float r);
 float acele_z(float m,float z_yo, float z, float r);
-
 float r(float x_yo, float x_o,float y_yo, float y_o,float z_yo, float z_o);
+
 int main(void){
 	FILE *in;
-	int i;
+	int i, k, j;
+	float Ax, Ay, Az;
+	float dt = 0.001;
 	float m[10];
 
 	float *x = malloc((10*1000)*sizeof(float));
@@ -33,10 +36,45 @@ int main(void){
 	for(i=0; i<10;i++){
 		fscanf(in, "%f, %f, %f, %f, %f , %f ,%f\n", &m[i],&x[i],&y[i],&z[i],&vx[i],&vy[i],&vz[i]);
 	}
- 	
 	
+	for(k=1;k<1000; k++){
+		for(j=0;j<10;j++){
+			int in = ind(k-1,j);
+			float x_yo = x[in];
+			float y_yo = y[in];
+			float z_yo = z[in];
+			Ax = 0;
+			Ay = 0;
+			Az = 0;
+			for(i=0;i<10;j++){
+				if(i==j){
+					continue;
+				}
+				int in_o = ind(k-1,i);
+				float m_o = m[i];
+				float x_o = x[in];
+				float y_o = y[in];
+				float z_o = z[in];
+				float r_temp = r(x_yo,x_o,y_yo,y_o,z_yo,z_o);
+				Ax += acele_x(m_o,x_yo,x_o,r);
+				Ay += acele_y(m_o,y_yo,y_o,r);
+				Az += acele_z(m_o,z_yo,z_o,r);
+			}
+			float vx_int = vx[in] + (0.5*Ax*dt); 
+			float vy_int = vy[in] + (0.5*Ay*dt);
+			float vz_int = vz[in] + (0.5*Az*dt);
+			
+			int in_new = ind(k,j);
+			x[in_new] = x_yo + vx_int*dt;
+			y[in_new] = y_yo + vy_int*dt;
+			z[in_new] = z_yo + vz_int*dt;
+			
+		}
+	}
 return 0;
 }
+
+//Distancia
 float r(float x_yo, float x_o,float y_yo, float y_o,float z_yo, float z_o){
 	float dist = sqrt(pow(x_o-x_yo,2.0)+pow(y_o-y_yo,2.0)+pow(z_o-z_yo,2.0));
 	return dist;
@@ -44,7 +82,7 @@ float r(float x_yo, float x_o,float y_yo, float y_o,float z_yo, float z_o){
 
 //Aceleraciones
 float acele_x(float m,float x_yo, float x, float r){
-	float A = G*m*(x-x_yo)/pow(r,3.0);
+	float Ax = G*m*(x-x_yo)/pow(r,3.0);
 	return Ax;	
 }
 float acele_y(float m,float y_yo, float y, float r){
