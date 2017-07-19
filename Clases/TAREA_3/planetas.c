@@ -36,6 +36,10 @@ int main(void){
 	}
 	masas_solares(m);
 	Leap_Frog(m,x,y,z,vx,vy,vz,n_ts,dt);
+	for (int i = 0; i < 1000; ++i)
+	{
+		printf("%e\n", x[i]);
+	}
 
 return 0;
 }
@@ -77,7 +81,7 @@ void Leap_Frog(double* m, double* x,double* y,double* z,double* vx,double* vy,do
 	double r_temp;
 
 
-	for(k=1;k<3; k++){
+	for(k=1;k<n_ts; k++){
 		for(j=0;j<10;j++){
 			in = ind(k-1,j);
 			A[0] = 0;
@@ -106,7 +110,12 @@ void Leap_Frog(double* m, double* x,double* y,double* z,double* vx,double* vy,do
 				x[in_new] = x[in] + vx[in]*dt;
 				y[in_new] = y[in] + vy[in]*dt;
 				z[in_new] = z[in] + vz[in]*dt;
-				printf("POS SEGUNDA: %2.8lf\n", x[in_new]);
+				//printf("POS SEGUNDA: %2.8lf\n", x[in_new]);
+
+				//Lleno la segunda velocidad
+				vx[in_new] = vx[in] + (A[0]*dt); 
+				vy[in_new] = vy[in] + (A[1]*dt);
+				vz[in_new] = vz[in] + (A[2]*dt);
 			}
 			else{
 				vx[in_new] = vx[in] + (A[0]*dt); 
@@ -116,7 +125,7 @@ void Leap_Frog(double* m, double* x,double* y,double* z,double* vx,double* vy,do
 				x[in_new] = x[in] + vx[in_new]*dt;
 				y[in_new] = y[in] + vy[in_new]*dt;
 				z[in_new] = z[in] + vz[in_new]*dt;
-				printf("NUEVA: %2.8lf\n", x[in_new]);
+				//printf("NUEVA: %2.8lf\n", x[in_new]);
 			}
 		}
 	}	
