@@ -14,7 +14,7 @@ void Leap_step(double* datos, int t, double dt);
 
 int main()
 {
-	int n_years = 250;
+	int n_years = 255;
 	int n_py = 1000;
 	float dt = 1.0/n_py;
 	int n_ts = n_years*n_py;
@@ -56,10 +56,10 @@ int main()
 	}
 
 	for(i=0;i<n_ts;i++){
-		for(n = 2; n < 5; n++){
-			for(j=0;j<10;j++){
+		for(j=0;j<10;j++){
+			for(n = 2; n < 5; n++){
 				printf("%e", datos[ind(i,j,n)]);
-				if(i==9 && j==4)
+				if(j==9 && n==4)
 					continue;
 				printf(",");
 			}
