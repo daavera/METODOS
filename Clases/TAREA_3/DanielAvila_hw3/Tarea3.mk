@@ -9,6 +9,10 @@ datos_p_1.csv : coordinates.csv Planetas.c Planetas.x Plots_planetas.py
 		./Planetas.x > datos_p_1.csv
 		python Plots_planetas.py
 	
+Planetas.x : Planetas.c
+		cc Planetas.c -lm -o Planetas.x
+		./Planetas.x > datos_p_1.csv
+		
 grafica_o_1.png : Onda.py
 	python $^
 	touch grafica_o_2.png
