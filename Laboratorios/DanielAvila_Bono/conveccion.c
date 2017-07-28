@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
+
 int n_ts =300, n_xs = 100, c =1;
 
 int ind(int t, int x);
